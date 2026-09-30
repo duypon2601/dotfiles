@@ -6,7 +6,8 @@ description: "Set up the autowf pipeline (Claude plans and reviews, agy writes c
 # automatic-workflow
 
 Prepare the current repository so the user can run the `autowf` pipeline
-(`~/.local/bin/autowf`): Claude writes/reviews, the Antigravity CLI (`agy`) codes,
+(`~/.local/bin/autowf`, a link to `auto.sh` in this skill's folder, installed by the dotfiles
+`install.sh`): Claude writes/reviews, the Antigravity CLI (`agy`) codes,
 the script runs `TEST_CMD` itself and commits each passing task on an `auto/*` branch.
 
 Invoked as `/automatic-workflow <goal>`. Talk to the user in the language they use;
@@ -203,16 +204,19 @@ installed, PLAN.md valid, git clean, preflight passed and the git hook check pas
 Terminal tab in the repo and run:
 
 ```sh
-caffeinate -i autowf
+caffeinate -i autowf            # macOS (keeps the Mac awake)
+tmux new -s autowf autowf       # Linux / GitHub Codespaces (survives a closed browser tab)
 ```
+
+If `autowf` is not on PATH, use `~/.claude/skills/automatic-workflow/auto.sh` instead.
 
 No need to activate `.venv` first — autowf does it. If the hooks or TEST_CMD only worked with some
 other activated environment (step e), give the command with that prefix instead, e.g.
-`conda activate foo && caffeinate -i autowf`, and say why: autowf checks the hooks at start (and
+`conda activate foo && caffeinate -i autowf` (on Linux without `caffeinate -i`), and say why: autowf checks the hooks at start (and
 stops with exit 5 if they fail), since a Terminal without that environment cannot commit.
 
 Phone alerts: if `NTFY_TOPIC` is not set (`autowf --check` says so), offer ntfy — the user adds
-`export NTFY_TOPIC=<hard-to-guess name>` to `~/.zshrc` (never to `.autowf.env`, which is committed:
+`export NTFY_TOPIC=<hard-to-guess name>` to `~/.zshrc` (or `~/.bashrc` on Linux/Codespaces) (never to `.autowf.env`, which is committed:
 anyone who knows the topic can read the alerts), subscribes to it in the ntfy app, and runs
 `autowf --notify-test`.
 
