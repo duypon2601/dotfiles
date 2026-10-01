@@ -174,6 +174,13 @@ to add to `userSettings.globalPermissionGrants.allow`.
 
 On exit 5:
 - ❌ login (AUTH): stop and tell the user to run `agy` in a Terminal to sign in. Do not retry.
+- ❌ broken agent hook (ENV_HOOK, e.g. a plugin's `PreToolUse` hook in
+  `~/.gemini/config/plugins/<plugin>/hooks.json` fails): every agent tool is blocked, so adding
+  rules will not help. Show the user the printed "Cách xử lý" (the plugin and every hooks.json
+  that registers it — agy loads plugins by the name in plugin.json, so renaming the folder or
+  `"enabled": false` in config.json does not turn the hook off); only with their OK, back up and
+  fix the hook command in each of those files. The same error during a run stops it at once
+  (exit 2) without using up the task's tries.
 - ❌ command / file write / TEST_CMD: add the suggested narrow rules to
   `~/.gemini/config/config.json` (back it up to `.bak` first; merge, keep other keys, add only
   missing rules). If TEST_CMD's executable is missing from AGY_ALLOWED_CMDS, also add it to
@@ -226,7 +233,7 @@ the agent writes its task summary to `TASK_SUMMARY.md` and autowf appends it to 
 tasks already committed since the task headings in PLAN.md last changed (editing a task's body
 keeps them); a reviewer `plan-gap` stops the run (exit 7) for a decision the plan does not make —
 write it into that task's section of PLAN.md, commit PLAN.md alone, `git stash -u`, rerun; the permission preflight is skipped while the permission
-config is unchanged (the git hook check still runs every time). If the user finishes or fixes a task
+config, the agy plugins (`hooks.json` etc.) and the agy version are unchanged (the git hook check still runs every time). If the user finishes or fixes a task
 by hand, `autowf --adopt N` runs TEST_CMD and commits the changes (or renames the HEAD commit) as
 `Task N: <title>` so the next run skips it — no hand-written commit names. Non-blocking reviewer
 remarks on passing tasks are listed in `summary.md` and kept across runs in `.auto-logs/nits.md`. To stop cleanly after the current task, run `autowf --stop-after` in the repo from another tab

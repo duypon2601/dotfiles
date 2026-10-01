@@ -21,7 +21,12 @@ chmod +x "$SKILLS_DIR/automatic-workflow/auto.sh"
 
 # Lệnh autowf trỏ tới auto.sh của skill (SKILL.md gọi `autowf`)
 mkdir -p "$BIN_DIR"
-ln -sf "$SKILLS_DIR/automatic-workflow/auto.sh" "$BIN_DIR/autowf"
+# Giữ nguyên wrapper tự viết (vd. trên Windows/Git Bash, nơi ln -s chỉ copy file): chỉ thay link hoặc bản copy của auto.sh
+if [ -e "$BIN_DIR/autowf" ] && [ ! -L "$BIN_DIR/autowf" ] && ! head -n 3 "$BIN_DIR/autowf" | grep -q '^# autowf — Claude lên plan'; then
+  echo "ℹ️  Giữ nguyên $BIN_DIR/autowf (wrapper tự viết, không phải link tới auto.sh)"
+else
+  ln -sf "$SKILLS_DIR/automatic-workflow/auto.sh" "$BIN_DIR/autowf"
+fi
 rc="$HOME/.bashrc"; [ "$(basename "${SHELL:-}")" = zsh ] && rc="$HOME/.zshrc"
 add_to_rc() { grep -qxF "$1" "$rc" 2>/dev/null || echo "$1" >> "$rc"; }
 case ":$PATH:" in
