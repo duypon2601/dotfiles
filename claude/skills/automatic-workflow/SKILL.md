@@ -227,7 +227,9 @@ Phone alerts: if `NTFY_TOPIC` is not set (`autowf --check` says so), offer ntfy 
 anyone who knows the topic can read the alerts), subscribes to it in the ntfy app, and runs
 `autowf --notify-test`.
 
-Mention: progress in `.auto-logs/run.log` (also shown in the Terminal), result and stop reason ("Nguyên nhân") in
+Mention: progress in `.auto-logs/run.log` (also shown in the Terminal; while agy works, each step it takes —
+file read, command, file edit, error — is printed live and saved to `.auto-logs/task<N>-try<M>-code.log.steps`;
+`AGY_WATCH=0` turns this off), result and stop reason ("Nguyên nhân") in
 `.auto-logs/summary.md` (with agy model calls/tokens per task; `AGY_TOKEN_WARN` sets the warning threshold),
 the agent writes its task summary to `TASK_SUMMARY.md` and autowf appends it to PROGRESS.md at commit, work lands on an `auto/*` branch; rerunning `autowf` resumes and skips
 tasks already committed since the task headings in PLAN.md last changed (editing a task's body
